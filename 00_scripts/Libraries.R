@@ -13,5 +13,7 @@ function(){
     if (!require("zoo")) install.packages("zoo"); library(zoo)
     if (!require("greeks")) install.packages("greeks"); library(greeks)
     if (!require("Quandl")) install.packages("Quandl"); library(Quandl)
+    if (!require("viridis")) install.packages("viridis"); library(viridis)
+    if (!require("hrbrthemes")) install.packages("hrbrthemes"); library(hrbrthemes)
   })
 }
