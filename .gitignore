@@ -3,4 +3,5 @@
 .RData
 .Ruserdata
 */db_credentials
-.yaml
+*.yaml
+*.yml
