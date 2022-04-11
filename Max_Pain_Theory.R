@@ -40,7 +40,7 @@ db_Option_Chain_SS <- db_Option_Chain %>%
   Expiration_Dates
   
   # Selecting the date
-  date_analysis <- "2021-11-15"
+  date_analysis <- "2022-02-28"
   
   # Subsetting the DB
   chart_data <- db_Option_Chain_SS %>%
@@ -125,11 +125,11 @@ db_MP_Calls %>%
   bind_rows(db_MP_Puts) %>%
   ggplot(aes(x = Expiration, y = Pct, fill = Status)) +
   geom_area(alpha = 0.4) +
-  scale_fill_manual(values = c("green","red"))+ 
+  scale_fill_manual(values = c("green","red")) + 
   scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
   labs(title    = "Percentage of total OI that ended, at expiration, ITM or OTM.",
        subtitle = "Analysis performed on the SPY.",
-       caption  = str_glue("By: Carlos Jimenez"),
+       caption  = "By: Carlos Jimenez",
        x = "Expiration Date",
        y = "Open Interest") +
   theme(legend.title = element_blank()) +
