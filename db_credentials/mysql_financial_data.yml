@@ -10,3 +10,4 @@ production:
     password: "KGMfLxghAtesDoRRKBHP"
     database: "bo_db_financial_data"
     port: 3306
+    bool: TRUE
