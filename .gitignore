@@ -2,4 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
-.db_credentials
+*/db_credentials
+.yaml
