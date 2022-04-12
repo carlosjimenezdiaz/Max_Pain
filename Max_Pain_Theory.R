@@ -50,7 +50,7 @@ db_Option_Chain_SS <- db_Option_Chain %>%
   Closing_Price_At_Expiration <- chart_data$adjusted[1]
   
   # Creating the chart
-  chart_data %>%
+  p <- chart_data %>%
     ggplot(aes(x = Strike, y = OI, fill = final_date)) +
     geom_bar(stat = "identity") +
     facet_free(. ~ type) + 
@@ -63,6 +63,10 @@ db_Option_Chain_SS <- db_Option_Chain %>%
          y = "Open Interest") + 
     theme(legend.position = "none")
 
+  p
+  
+  ggsave("OI_Analysis.png", plot = p, device = "png", path = "Plots/", width = 25, height = 15, units = "cm")
+  
 # Calculating how many options ended OTM at expiration (full analysis)
 db_Max_Pain <- NULL
 for(expirations in db_Option_Chain_SS$final_date %>% unique()){ # expirations <- "2021-11-15"
@@ -121,7 +125,7 @@ db_MP_Puts <- db_Max_Pain %>%
   pivot_longer(names_to = "Status", values_to = "Pct", -Expiration) %>%
   dplyr::mutate(Type = "Puts")
 
-db_MP_Calls %>%
+p <- db_MP_Calls %>%
   bind_rows(db_MP_Puts) %>%
   ggplot(aes(x = Expiration, y = Pct, fill = Status)) +
   geom_area(alpha = 0.4) +
@@ -134,6 +138,10 @@ db_MP_Calls %>%
        y = "Open Interest") +
   theme(legend.title = element_blank()) +
   facet_free(Type ~ .)
+
+p
+
+ggsave("Historical_OTM_vs_ITM_Analysis.png", plot = p, device = "png", path = "Plots/", width = 25, height = 15, units = "cm")
 
 # Stoping the Timer
 tictoc::toc()

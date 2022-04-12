@@ -80,7 +80,7 @@ db_option_chain_subset <- db_option_chain %>%
   dplyr::filter(expiration == Date_MP_Calculation)
 
 # Option Interest distribution
-db_option_chain_subset %>%
+p <- db_option_chain_subset %>%
   ggplot(aes(x = Strike, y = OI)) +
   geom_bar(stat = "identity") +
   scale_y_continuous(labels = scales::dollar_format(prefix = "")) +
@@ -91,6 +91,10 @@ db_option_chain_subset %>%
        y = "Open Interest") +
   theme(legend.title = element_blank()) +
   facet_free(type ~ .)
+
+p
+
+ggsave("OI_Distribution_Option_Type.png", plot = p, device = "png", path = "Plots/", width = 25, height = 15, units = "cm")
 
 # Analyzing the Calls
 db_Call_Cash <- NULL
@@ -152,7 +156,7 @@ Price_Max_Pain <- db_Max_Pain %>%
   pull()
 
 # Generating the Chart
-db_Max_Pain %>%
+p<- db_Max_Pain %>%
   dplyr::filter(Price >= Price_Max_Pain*0.8 & Price_Max_Pain <= Price_Max_Pain*1.2) %>%
   ggplot(aes(x = Price, y = Total_Cash_Value)) +
   geom_line() +
@@ -167,6 +171,10 @@ db_Max_Pain %>%
              linetype   = "dotted", 
              color      = "blue",  
              size       = 1.5)
+
+p
+
+ggsave("Pain_Price_Calculation.png", plot = p, device = "png", path = "Plots/", width = 25, height = 15, units = "cm")
 
 # Stoping the Timer
 tictoc::toc()
