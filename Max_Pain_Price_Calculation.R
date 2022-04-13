@@ -12,7 +12,7 @@ source(file = "00_scripts/Libraries.R")
 libraries()
 
 # Local Variavles
-Ticker              <- "SPY" # Defining the ticker
+Ticker              <- "PYPL" # Defining the ticker
 Ticker_Multi        <- 100   # Multiplier of the Option Contract
 environment_r       <- "EU"  # Where is your computer located? EU or US
 Date_MP_Calculation <- "2022-04-14" # Expiration that you want to analyze
@@ -75,17 +75,15 @@ if(environment_r == "US"){
 ################################################
 # Calculating the Strike where the Max Pain is #
 ################################################
-# Subsetting the global database
-db_option_chain_subset <- db_option_chain %>%
-  dplyr::filter(expiration == Date_MP_Calculation)
 
 # Option Interest distribution
-p <- db_option_chain_subset %>%
+p <- db_option_chain %>%
+  dplyr::filter(expiration == Date_MP_Calculation) %>%
   ggplot(aes(x = Strike, y = OI)) +
   geom_bar(stat = "identity") +
   scale_y_continuous(labels = scales::dollar_format(prefix = "")) +
   labs(title    = str_glue("Option interest on all strikes ({Date_MP_Calculation} expiration date)."),
-       subtitle = str_glue("Analysis performed on the {Ticker}."),
+       subtitle = str_glue("Analysis performed on {Ticker}."),
        caption  = "By: Carlos Jimenez",
        x = "Strike",
        y = "Open Interest") +
@@ -96,9 +94,27 @@ p
 
 ggsave("OI_Distribution_Option_Type.png", plot = p, device = "png", path = "Plots/", width = 25, height = 15, units = "cm")
 
+p <- db_option_chain %>%
+  dplyr::filter(expiration == Date_MP_Calculation) %>%
+  ggplot(aes(x = Strike, y = OI, colour = type)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "")) +
+  labs(title    = str_glue("Option interest on all strikes ({Date_MP_Calculation} expiration date)."),
+       subtitle = str_glue("Analysis performed on {Ticker}."),
+       caption  = "By: Carlos Jimenez",
+       x = "Strike",
+       y = "Open Interest") +
+  theme(legend.title = element_blank())
+
+p
+
+ggsave("OI_Distribution_Option_Type_V2.png", plot = p, device = "png", path = "Plots/", width = 25, height = 15, units = "cm")
+
 # Analyzing the Calls
 db_Call_Cash <- NULL
-db_Calls_MP  <- db_option_chain_subset %>% dplyr::filter(type == "calls")
+db_Calls_MP  <- db_option_chain %>%
+  dplyr::filter(expiration == Date_MP_Calculation) %>% 
+  dplyr::filter(type == "calls")
 
 for(closing_price in db_Calls_MP$Strike){ # closing_price <- 195
   
@@ -121,7 +137,9 @@ for(closing_price in db_Calls_MP$Strike){ # closing_price <- 195
 
 # Analyzing the Puts
 db_Put_Cash <- NULL
-db_Puts_MP  <- db_option_chain_subset %>% dplyr::filter(type == "puts")
+db_Puts_MP  <- db_option_chain %>%
+  dplyr::filter(expiration == Date_MP_Calculation) %>% 
+  dplyr::filter(type == "puts")
 
 for(closing_price in db_Puts_MP$Strike){ # closing_price <- 175
   
@@ -156,7 +174,7 @@ Price_Max_Pain <- db_Max_Pain %>%
   pull()
 
 # Generating the Chart
-p<- db_Max_Pain %>%
+p <- db_Max_Pain %>%
   dplyr::filter(Price >= Price_Max_Pain*0.8 & Price_Max_Pain <= Price_Max_Pain*1.2) %>%
   ggplot(aes(x = Price, y = Total_Cash_Value)) +
   geom_line() +
