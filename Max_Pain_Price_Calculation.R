@@ -12,10 +12,11 @@ source(file = "00_scripts/Libraries.R")
 libraries()
 
 # Local Variavles
-Ticker              <- "PYPL" # Defining the ticker
+Ticker              <- "^SPX" # Defining the ticker
 Ticker_Multi        <- 100   # Multiplier of the Option Contract
 environment_r       <- "EU"  # Where is your computer located? EU or US
-Date_MP_Calculation <- "2022-04-14" # Expiration that you want to analyze
+Date_MP_Calculation <- "2022-04-22" # Expiration that you want to analyze
+Ticker_Label        <- str_replace_all(Ticker, "[^[:alnum:]]", " ") %>% str_replace_all(.,"[ ]+", "")
 
 # Getting future option chain
 db_option_chain <- getOptionChain(Ticker, src = "yahoo", Exp = str_glue("{lubridate::year(Sys.Date())}/{lubridate::year(Sys.Date()) + 1}")) %>%
@@ -83,7 +84,7 @@ p <- db_option_chain %>%
   geom_bar(stat = "identity") +
   scale_y_continuous(labels = scales::dollar_format(prefix = "")) +
   labs(title    = str_glue("Option interest on all strikes ({Date_MP_Calculation} expiration date)."),
-       subtitle = str_glue("Analysis performed on {Ticker}."),
+       subtitle = str_glue("Analysis performed on {Ticker_Label}."),
        caption  = "By: Carlos Jimenez",
        x = "Strike",
        y = "Open Interest") +
@@ -100,7 +101,7 @@ p <- db_option_chain %>%
   geom_line() +
   scale_y_continuous(labels = scales::dollar_format(prefix = "")) +
   labs(title    = str_glue("Option interest on all strikes ({Date_MP_Calculation} expiration date)."),
-       subtitle = str_glue("Analysis performed on {Ticker}."),
+       subtitle = str_glue("Analysis performed on {Ticker_Label}."),
        caption  = "By: Carlos Jimenez",
        x = "Strike",
        y = "Open Interest") +
@@ -180,7 +181,7 @@ p <- db_Max_Pain %>%
   geom_line() +
   scale_y_continuous(labels = scales::dollar_format()) +
   labs(title    = str_glue("Max Pain Calculations - Expected Pin Price at expiration: {Price_Max_Pain}"),
-       subtitle = str_glue("Analysis performed on {Ticker} - Expiration Date: {Date_MP_Calculation}"),
+       subtitle = str_glue("Analysis performed on {Ticker_Label} - Expiration Date: {Date_MP_Calculation}"),
        caption  = "By: Carlos Jimenez",
        x = "Underlying Price",
        y = "Cash Value of Options") +
