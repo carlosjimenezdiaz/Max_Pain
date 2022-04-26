@@ -15,7 +15,7 @@ libraries()
 Ticker              <- "^SPX" # Defining the ticker
 Ticker_Multi        <- 100   # Multiplier of the Option Contract
 environment_r       <- "EU"  # Where is your computer located? EU or US
-Date_MP_Calculation <- "2022-04-22" # Expiration that you want to analyze
+Date_MP_Calculation <- "2022-04-29" # Expiration that you want to analyze
 Ticker_Label        <- str_replace_all(Ticker, "[^[:alnum:]]", " ") %>% str_replace_all(.,"[ ]+", "")
 
 # Getting future option chain
@@ -167,7 +167,8 @@ db_Max_Pain <- db_Call_Cash %>%
   bind_rows(db_Put_Cash %>%
               dplyr::mutate(Option_Type = "Put")) %>%
   dplyr::group_by(Price) %>%
-  dplyr::summarise(Total_Cash_Value = sum(Cash_Value))
+  dplyr::summarise(Total_Cash_Value = sum(Cash_Value)) %>%
+  dplyr::mutate(Total_Cash_Value = (lowess(Price, Total_Cash_Value, f = 1/10) %>% pluck(2))) # Removing the Noice
 
 Price_Max_Pain <- db_Max_Pain %>%
   dplyr::filter(Total_Cash_Value == min(Total_Cash_Value)) %>%
@@ -176,7 +177,7 @@ Price_Max_Pain <- db_Max_Pain %>%
 
 # Generating the Chart
 p <- db_Max_Pain %>%
-  dplyr::filter(Price >= Price_Max_Pain*0.8 & Price_Max_Pain <= Price_Max_Pain*1.2) %>%
+  dplyr::filter(Price >= Price_Max_Pain*0.5 & Price_Max_Pain <= Price_Max_Pain*1.5) %>%
   ggplot(aes(x = Price, y = Total_Cash_Value)) +
   geom_line() +
   scale_y_continuous(labels = scales::dollar_format()) +
