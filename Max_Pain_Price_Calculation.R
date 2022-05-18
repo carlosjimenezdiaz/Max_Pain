@@ -14,7 +14,6 @@ libraries()
 # Local Variavles
 Ticker              <- "^SPX" # Defining the ticker
 Ticker_Multi        <- 100   # Multiplier of the Option Contract
-environment_r       <- "EU"  # Where is your computer located? EU or US
 Date_MP_Calculation <- "2022-05-13" # Expiration that you want to analyze
 Ticker_Label        <- str_replace_all(Ticker, "[^[:alnum:]]", " ") %>% str_replace_all(.,"[ ]+", "")
 
