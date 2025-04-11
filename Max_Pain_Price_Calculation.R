@@ -12,9 +12,9 @@ source(file = "00_scripts/Libraries.R")
 libraries()
 
 # Local Variavles
-Ticker              <- "^SPX" # Defining the ticker
+Ticker              <- "TSLA" # Defining the ticker
 Ticker_Multi        <- 100   # Multiplier of the Option Contract
-Date_MP_Calculation <- "2022-05-13" # Expiration that you want to analyze
+Date_MP_Calculation <- "2025-04-17" # Expiration that you want to analyze
 Ticker_Label        <- str_replace_all(Ticker, "[^[:alnum:]]", " ") %>% str_replace_all(.,"[ ]+", "")
 
 # Getting Current Price
@@ -26,23 +26,23 @@ db_option_chain <- getOptionChain(Ticker, src = "yahoo", Exp = str_glue("{lubrid
   enframe() %>%
   unnest(cols = c(value))
 
-  # Extracting the type of Option
-  opt_type <- c()
-  for(i in 1:nrow(db_option_chain)){ # i <- 1
-    
-    # Selecting the name column
-    name_tag <- db_option_chain$name[i]
-    
-    # Getting the length of that name
-    name_length <- nchar(name_tag)
-    
-    # Getting the option type
-    opt_type <- c(opt_type, substr(name_tag, 14, name_length))
-  }
+# Extracting the type of Option
+opt_type <- c()
+for(i in 1:nrow(db_option_chain)){ # i <- 1
+  
+  # Selecting the name column
+  name_tag <- db_option_chain$name[i]
+  
+  # Getting the length of that name
+  name_length <- nchar(name_tag)
+  
+  # Getting the option type
+  opt_type <- c(opt_type, substr(name_tag, 14, name_length))
+}
   
 # Adding the Option Type
-  db_option_chain <- db_option_chain %>%
-  dplyr::mutate(type = opt_type)
+db_option_chain <- db_option_chain %>%
+dplyr::mutate(type = opt_type)
   
 ################################################
 # Calculating the Strike where the Max Pain is #
@@ -86,7 +86,7 @@ ggsave("OI_Distribution_Option_Type_V2.png", plot = p, device = "png", path = "P
 db_Call_Cash <- NULL
 db_Calls_MP  <- db_option_chain %>%
   dplyr::filter((Expiration %>% as.Date()) == (Date_MP_Calculation %>% as.Date())) %>%
-  dplyr::filter(type == "calls")
+  dplyr::filter(type == "alls")
 
 for(closing_price in db_Calls_MP$Strike){ # closing_price <- 3900
   
@@ -112,7 +112,7 @@ for(closing_price in db_Calls_MP$Strike){ # closing_price <- 3900
 db_Put_Cash <- NULL
 db_Puts_MP  <- db_option_chain %>%
   dplyr::filter((Expiration %>% as.Date()) == (Date_MP_Calculation %>% as.Date())) %>%
-  dplyr::filter(type == "puts")
+  dplyr::filter(type == "uts")
 
 for(closing_price in db_Puts_MP$Strike){ # closing_price <- 175
   
