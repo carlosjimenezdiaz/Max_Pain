@@ -12,7 +12,7 @@ source(file = "00_scripts/Libraries.R")
 libraries()
 
 # Local Variavles
-Ticker              <- "TSLA" # Defining the ticker
+Ticker              <- "SPY" # Defining the ticker
 Ticker_Multi        <- 100   # Multiplier of the Option Contract
 Date_MP_Calculation <- "2025-04-17" # Expiration that you want to analyze
 Ticker_Label        <- str_replace_all(Ticker, "[^[:alnum:]]", " ") %>% str_replace_all(.,"[ ]+", "")
@@ -54,7 +54,7 @@ p <- db_option_chain %>%
   ggplot(aes(x = Strike, y = OI)) +
   geom_bar(stat = "identity") +
   scale_y_continuous(labels = scales::dollar_format(prefix = "")) +
-  labs(title    = str_glue("Option interest on all strikes ({Date_MP_Calculation} expiration date)."),
+  labs(title    = str_glue("Open Interest on all strikes ({Date_MP_Calculation} expiration date)."),
        subtitle = str_glue("Analysis performed on {Ticker_Label}."),
        caption  = "By: Carlos Jimenez",
        x = "Strike",
@@ -71,7 +71,7 @@ p <- db_option_chain %>%
   ggplot(aes(x = Strike, y = OI, colour = type)) +
   geom_line() +
   scale_y_continuous(labels = scales::dollar_format(prefix = "")) +
-  labs(title    = str_glue("Option interest on all strikes ({Date_MP_Calculation} expiration date)."),
+  labs(title    = str_glue("Open Interest on all strikes ({Date_MP_Calculation} expiration date)."),
        subtitle = str_glue("Analysis performed on {Ticker_Label}."),
        caption  = "By: Carlos Jimenez",
        x = "Strike",
